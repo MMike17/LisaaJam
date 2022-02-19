@@ -1,10 +1,13 @@
+using System;
 using UnityEngine;
 
 public class Config : Singleton<Config>
 {
 	[Header("Settings")]
 	public KeyCode moveForwardKey;
-	public KeyCode moveBackwardsKey, moveLeftKey, moveRightKey, lazerModeKey;
+	public KeyCode moveBackwardsKey, moveLeftKey, moveRightKey, lazerModeKey, pauseKey;
+
+	public bool canPause { get; private set; }
 
 	float globalSoundMultiplier;
 
@@ -23,5 +26,10 @@ public class Config : Singleton<Config>
 	public float GetAudioVolume(float sourceVolume)
 	{
 		return sourceVolume * globalSoundMultiplier;
+	}
+
+	public void SetCanPause(bool state)
+	{
+		canPause = state;
 	}
 }

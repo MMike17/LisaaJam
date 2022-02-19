@@ -48,3 +48,4 @@ MonoBehaviour:
   moveLeftKey: 113
   moveRightKey: 100
   lazerModeKey: 32
+  pauseKey: 27

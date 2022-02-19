@@ -15,11 +15,18 @@ public class MainMenu : MonoBehaviour
 	{
 		raycaster = GetComponent<GraphicRaycaster>();
 
-		SceneLoader.Instance.SubscribeEvent(SceneLoader.GameScene.SceneTag.Menu, () => FindObjectOfType<MainMenu>().SetUIInterractibility(true));
+		SceneLoader.Instance.SubscribeEvent(SceneLoader.GameScene.SceneTag.Menu, () =>
+		{
+			FindObjectOfType<MainMenu>().SetUIInterractibility(true);
+			Config.Instance.SetCanPause(false);
+		});
 
 		// detect first launch
 		if (!SceneLoader.Instance.isLoading)
+		{
 			SetUIInterractibility(true);
+			Config.Instance.SetCanPause(false);
+		}
 	}
 
 	void SetUIInterractibility(bool state)

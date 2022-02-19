@@ -11,7 +11,12 @@ public class LevelManager : Singleton<LevelManager>
 	{
 		base.Awake();
 
-		SceneLoader.Instance.SubscribeEvent(SceneLoader.GameScene.SceneTag.Software_0, StartLevel);
+		SceneLoader.Instance.SubscribeEvent(SceneLoader.GameScene.SceneTag.Software_0, () =>
+		{
+			StartLevel();
+			Config.Instance.SetCanPause(true);
+		});
+
 		// SceneLoader.Instance.SubscribeEvent(SceneLoader.GameScene.SceneTag.Software_, StartLevel);
 
 		Renderer[] renderers = FindObjectsOfType<Renderer>();
