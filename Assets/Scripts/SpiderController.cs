@@ -12,6 +12,8 @@ public class SpiderController : MonoBehaviour
 	[Header("Settings - Legs")]
 	public float legsIKMaxDistance;
 	public float legsMoveDuration, legMoveHeight;
+	[Range(0, 1)]
+	public float swayAmount;
 	public int IKIterations, maxSyncLegMove;
 	public AnimationCurve legMoveHeightCurve;
 
@@ -90,14 +92,14 @@ public class SpiderController : MonoBehaviour
 
 	void Update()
 	{
-		float rotateInput = Input.GetAxis("Mouse X");
-		transform.Rotate(Vector3.up * turnSpeed * rotateInput * Time.deltaTime);
+		transform.rotation = Quaternion.LookRotation(transform.forward, Vector3.Lerp(Vector3.up, GetCrossNormal(), swayAmount));
+		transform.rotation *= Quaternion.AngleAxis(Input.GetAxis("Mouse X") * turnSpeed * Time.deltaTime, Vector3.up);
+
 		CameraManager.Instance.AddVerticalRotation(-Input.GetAxis("Mouse Y") * Time.deltaTime);
 
-		RaycastHit hit;
-		Physics.Raycast(groundRayStart.position, -transform.up, out hit);
-
-		transform.position = hit.point + hit.normal * bodyHeight;
+		Vector3 position = transform.position;
+		position.y = GetAverageLegHeight() + bodyHeight;
+		transform.position = position;
 
 		foreach (SpiderLeg leg in allLegs)
 		{
@@ -106,6 +108,16 @@ public class SpiderController : MonoBehaviour
 		}
 
 		ComputeIK();
+	}
+
+	float GetAverageLegHeight()
+	{
+		float totalHeight = 0;
+
+		foreach (SpiderLeg leg in allLegs)
+			totalHeight += leg.calf.position.y;
+
+		return totalHeight / allLegs.Length;
 	}
 
 	void LateUpdate()
@@ -143,7 +155,9 @@ public class SpiderController : MonoBehaviour
 		for (int index = 0; index < 2; index++)
 		{
 			int reverseIndex = (allLegs.Length - 1) - index;
-			crossVectors[index] = allLegs[index].target.position - allLegs[reverseIndex].transform.position;
+			crossVectors[index] = allLegs[index].calf.position - allLegs[reverseIndex].calf.position;
+
+			Debug.DrawLine(allLegs[index].calf.position, allLegs[reverseIndex].calf.position, Color.blue);
 		}
 
 		return Vector3.Cross(crossVectors[0], crossVectors[1]);
