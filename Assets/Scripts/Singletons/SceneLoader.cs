@@ -2,17 +2,21 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using static SceneLoader.GameScene;
 
 public class SceneLoader : Singleton<SceneLoader>
 {
 	[Header("Settings")]
-	public float loadingDuration;
+	public float fadeDuration;
+	public float matrixAnimDuration;
 	public List<GameScene> scenes;
 
-	bool isLoading;
+	public bool isLoading { get; private set; }
 
-	public override void Awake()
+	SceneTag currentSceneTag;
+
+	protected override void Awake()
 	{
 		base.Awake();
 
@@ -36,14 +40,55 @@ public class SceneLoader : Singleton<SceneLoader>
 
 	IEnumerator LoadSceneRoutine(GameScene scene)
 	{
-		float timer = 0;
+		float timer = LevelManager.IsSceneLevel ? 0 : fadeDuration;
 
-		while (timer != loadingDuration)
+		while (timer < fadeDuration)
 		{
-			float percent = timer / loadingDuration;
-
-			// animate shader
 			timer += Time.deltaTime;
+			float percent = timer / fadeDuration;
+
+			LevelManager.Instance.SetShaderEdges(1 - percent);
+
+			yield return null;
+		}
+
+		timer = 0;
+
+		while (timer < matrixAnimDuration)
+		{
+			timer += Time.deltaTime;
+			float percent = timer / matrixAnimDuration;
+
+			// animate matrix shader
+
+			yield return null;
+		}
+
+		SceneManager.LoadScene(scene.buildIndex);
+
+		timer = 0;
+
+		while (timer < matrixAnimDuration)
+		{
+			timer += Time.deltaTime;
+			float percent = 1 - (timer / matrixAnimDuration);
+
+			// animate matrix shader
+
+			if (LevelManager.IsSceneLevel)
+				LevelManager.Instance.SetShaderEdges(0);
+
+			yield return null;
+		}
+
+		timer = LevelManager.IsSceneLevel ? 0 : fadeDuration;
+
+		while (timer < fadeDuration)
+		{
+			timer += Time.deltaTime;
+			float percent = timer / fadeDuration;
+
+			LevelManager.Instance.SetShaderEdges(percent);
 			yield return null;
 		}
 
@@ -88,7 +133,7 @@ public class SceneLoader : Singleton<SceneLoader>
 		public void ScheduleOnSceneLoaded(Action callback)
 		{
 			if (callback != null)
-				onSceneLoaded += callback;
+				onSceneLoaded = callback;
 		}
 
 		public void OnSceneLoaded()
