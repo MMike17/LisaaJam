@@ -2,10 +2,11 @@ using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class CameraManager : MonoBehaviour
+public class CameraManager : Singleton<CameraManager>
 {
 	[Header("Settings")]
 	public CameraPreset[] cameraPresets;
+	public float minVerticalRot, maxVerticalRot, rotationSpeed;
 
 	[Header("Scene references")]
 	public Camera mainCamera;
@@ -15,7 +16,8 @@ public class CameraManager : MonoBehaviour
 	public bool enableTest;
 
 	CameraPreset currentPreset => cameraPresets[presetIndex];
-	int lastPresetIndex;
+
+	float verticalRotAmount;
 
 	void OnDrawGizmos()
 	{
@@ -43,19 +45,39 @@ public class CameraManager : MonoBehaviour
 			}
 
 			if (enableTest)
-				SetCameraSettings(currentPreset);
+				SetCameraSettings();
 		}
 	}
 
-	void SetCameraSettings(CameraPreset preset)
+	public override void Awake()
 	{
-		mainCamera.transform.position = preset.target.position;
-		mainCamera.transform.rotation = preset.target.rotation;
-		mainCamera.transform.SetParent(preset.target);
+		base.Awake();
 
-		mainCamera.fieldOfView = preset.fov;
-		mainCamera.orthographicSize = preset.orthographicFov;
-		mainCamera.orthographic = preset.orthographic;
+		verticalRotAmount = 0;
+	}
+
+	void SetCameraSettings()
+	{
+		mainCamera.transform.position = currentPreset.target.position;
+		mainCamera.transform.rotation = currentPreset.target.rotation;
+		mainCamera.transform.SetParent(currentPreset.target);
+
+		mainCamera.fieldOfView = currentPreset.fov;
+		mainCamera.orthographicSize = currentPreset.orthographicFov;
+		mainCamera.orthographic = currentPreset.orthographic;
+	}
+
+	public void SetCameraPreset(int index)
+	{
+		presetIndex = Mathf.Clamp(index, 0, cameraPresets.Length - 1);
+		SetCameraSettings();
+	}
+
+	public void AddVerticalRotation(float amount)
+	{
+		verticalRotAmount = Mathf.Clamp(verticalRotAmount + amount * rotationSpeed, minVerticalRot, maxVerticalRot);
+		mainCamera.transform.rotation = currentPreset.target.rotation;
+		mainCamera.transform.Rotate(Vector3.right * verticalRotAmount);
 	}
 
 	[Serializable]
