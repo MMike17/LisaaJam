@@ -5,9 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class SpiderController : MonoBehaviour
 {
-	// TODO : Body adapt to terrain
 	// TODO : lazer
-	// TODO : adapts to leg meshes (different lengths)
 
 	[Header("Settings - Legs")]
 	public float legsIKMaxDistance;
@@ -21,6 +19,10 @@ public class SpiderController : MonoBehaviour
 	public float bodyHeight;
 	public float forwardSpeed, backwardSpeed, sidewaysSpeed, turnSpeed;
 
+	[Header("Settings - Lazer")]
+	public float maxLazerRange;
+	public int normalCameraIndex, lazerCameraIndex;
+
 	[Header("Scene references - Legs")]
 	public SpiderLeg[] frontLegs;
 	public SpiderLeg[] middleLegs, backLegs;
@@ -29,11 +31,17 @@ public class SpiderController : MonoBehaviour
 	[Header("Scene references - Movement")]
 	public Transform groundRayStart;
 
+	[Header("Scene references - Movement")]
+	public Transform lazerPoint;
+	public Transform lazerModel;
+
 	bool canMoveLeg => movingLegsCount < maxSyncLegMove;
 
 	SpiderLeg[] allLegs;
+	Transform[] lazers;
 	Rigidbody rigid;
 	int movingLegsCount;
+	bool lazerMode;
 
 	void OnDrawGizmos()
 	{
@@ -107,6 +115,23 @@ public class SpiderController : MonoBehaviour
 				StartCoroutine(MoveLeg(leg));
 		}
 
+		if (Input.GetKeyDown(Config.Instance.lazerModeKey))
+		{
+			lazerMode = !lazerMode;
+			CameraManager.Instance.SetCameraPreset(lazerMode ? lazerCameraIndex : normalCameraIndex);
+		}
+
+		if (lazerMode)
+		{
+			RaycastHit hit;
+			Physics.Raycast(lazerPoint.position, lazerPoint.forward, out hit, maxLazerRange);
+
+			float lazerSize = hit.collider != null ? hit.distance : maxLazerRange;
+			lazerModel.localScale = Vector3.one + Vector3.forward * lazerSize;
+		}
+
+		lazerModel.gameObject.SetActive(lazerMode);
+
 		ComputeIK();
 	}
 
@@ -145,8 +170,6 @@ public class SpiderController : MonoBehaviour
 			leg.ComputeIK(IKIterations);
 	}
 
-	// TODO : How are we going to apply that ?
-	// angular difference on YZ plane ? => regular Rotate
 	Vector3 GetCrossNormal()
 	{
 		// we suppose the legs are always paired

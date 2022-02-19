@@ -49,7 +49,7 @@ public class CameraManager : Singleton<CameraManager>
 		}
 	}
 
-	public override void Awake()
+	protected override void Awake()
 	{
 		base.Awake();
 
