@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class SceneTransition : MonoBehaviour
 {
@@ -14,11 +15,13 @@ public class SceneTransition : MonoBehaviour
     public void SetUpFade()
     {
         if (isFading) return;
-        isFading = true;
         var cam = Camera.main;
         if (cam == null) return;
         var screenCap = GetScreenCap(cam);
         if (screenCap == null) return;
+        isFading = true;
+        var uac = cam.GetComponent<UniversalAdditionalCameraData>();
+        uac.renderPostProcessing = false;
 
         quad = GameObject.CreatePrimitive(PrimitiveType.Quad).GetComponent<MeshRenderer>();
         SetQuadTransform(cam, quad.transform);
@@ -39,6 +42,10 @@ public class SceneTransition : MonoBehaviour
         if (!isFading) return;
         Destroy(quad.gameObject);
         quad = null;
+        
+        var uac = Camera.main.GetComponent<UniversalAdditionalCameraData>();
+        uac.renderPostProcessing = false;
+        
         isFading = false;
     }
 
