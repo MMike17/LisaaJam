@@ -4,11 +4,11 @@ public class Config : Singleton<Config>
 {
 	[Header("Settings")]
 	public KeyCode moveForwardKey;
-	public KeyCode moveBackwardsKey, moveLeftKey, moveRightKey;
+	public KeyCode moveBackwardsKey, moveLeftKey, moveRightKey, lazerModeKey;
 
 	float globalSoundMultiplier;
 
-	public override void Awake()
+	protected override void Awake()
 	{
 		base.Awake();
 

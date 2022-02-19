@@ -47,3 +47,4 @@ MonoBehaviour:
   moveBackwardsKey: 115
   moveLeftKey: 113
   moveRightKey: 100
+  lazerModeKey: 32
