@@ -1,5 +1,35 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-3390826893362742631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 581da1762ba874a489fc92323d462f92, type: 3}
+  m_Name: DepthNormals
+  m_EditorClassIdentifier: 
+  m_Active: 1
+--- !u!114 &-1146306703408698965
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c197c4c2db2a56945b2b1d0ff0c0c324, type: 3}
+  m_Name: NewBlitMaterialFeature
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings:
+    material: {fileID: 0}
+    materialPassIndex: -1
+    renderEvent: 300
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12,8 +42,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de640fe3d0db1804a85f9fc8f5cadab6, type: 3}
   m_Name: UniversalRenderPipelineAsset_Renderer
   m_EditorClassIdentifier: 
-  m_RendererFeatures: []
-  m_RendererFeatureMap: 
+  m_RendererFeatures:
+  - {fileID: -3390826893362742631}
+  - {fileID: -1146306703408698965}
+  m_RendererFeatureMap: 99ba45e6e75cf1d0abe9ac6b208017f0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
   shaders:
