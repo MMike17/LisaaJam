@@ -50,3 +50,4 @@ MonoBehaviour:
   lazerModeKey: 32
   dashKey: 32
   pauseKey: 27
+  connectKey: 13

@@ -30,6 +30,7 @@ public class SpiderController : MonoBehaviour
 
 	[Header("Scene references - Movement")]
 	public Transform groundRayStart;
+	public Animator anim;
 
 	[Header("Scene references - Movement")]
 	public Transform lazerPoint;
@@ -41,7 +42,7 @@ public class SpiderController : MonoBehaviour
 	Transform[] lazers;
 	Rigidbody rigid;
 	int movingLegsCount;
-	bool lazerMode;
+	bool lazerMode, isDancing;
 
 	void OnDrawGizmos()
 	{
@@ -76,6 +77,8 @@ public class SpiderController : MonoBehaviour
 	{
 		rigid = GetComponent<Rigidbody>();
 
+		anim.transform.SetParent(null);
+
 		foreach (SpiderLeg leg in frontLegs)
 			leg.Init(frontLegsHint);
 
@@ -100,12 +103,45 @@ public class SpiderController : MonoBehaviour
 
 	void Update()
 	{
+		if (!lazerMode && !isDancing && Input.GetKeyDown(Config.Instance.danceKey))
+		{
+			anim.transform.position = transform.position;
+			anim.transform.rotation = transform.rotation;
+
+			isDancing = true;
+			anim.Play("Dance");
+
+			this.DelayAction(() =>
+			{
+				isDancing = false;
+				anim.Play("Idle");
+			}, 10);
+		}
+
+		Vector3 position;
+
+		if (isDancing)
+		{
+			position = transform.position;
+			position.y = GetAverageLegHeight() + bodyHeight;
+			transform.position = position;
+
+			foreach (SpiderLeg leg in allLegs)
+			{
+				if (canMoveLeg && !leg.isMoving && leg.ShouldMove(legsIKMaxDistance))
+					StartCoroutine(MoveLeg(leg));
+			}
+
+			ComputeIK();
+			return;
+		}
+
 		transform.rotation = Quaternion.LookRotation(transform.forward, Vector3.Lerp(Vector3.up, GetCrossNormal(), swayAmount));
 		transform.rotation *= Quaternion.AngleAxis(Input.GetAxis("Mouse X") * turnSpeed * Time.deltaTime, Vector3.up);
 
 		CameraManager.Instance.AddVerticalRotation(-Input.GetAxis("Mouse Y") * Time.deltaTime);
 
-		Vector3 position = transform.position;
+		position = transform.position;
 		position.y = GetAverageLegHeight() + bodyHeight;
 		transform.position = position;
 
@@ -149,17 +185,22 @@ public class SpiderController : MonoBehaviour
 	{
 		Vector3 velocity = Vector3.zero;
 
-		if (Input.GetKey(Config.Instance.moveForwardKey))
-			velocity += transform.forward * forwardSpeed;
+		if (!isDancing)
+		{
+			if (Input.GetKey(Config.Instance.moveForwardKey))
+				velocity += transform.forward * forwardSpeed;
 
-		if (Input.GetKey(Config.Instance.moveBackwardsKey))
-			velocity -= transform.forward * backwardSpeed;
+			if (Input.GetKey(Config.Instance.moveBackwardsKey))
+				velocity -= transform.forward * backwardSpeed;
 
-		if (Input.GetKey(Config.Instance.moveRightKey))
-			velocity += transform.right * sidewaysSpeed;
+			if (Input.GetKey(Config.Instance.moveRightKey))
+				velocity += transform.right * sidewaysSpeed;
 
-		if (Input.GetKey(Config.Instance.moveLeftKey))
-			velocity -= transform.right * sidewaysSpeed;
+			if (Input.GetKey(Config.Instance.moveLeftKey))
+				velocity -= transform.right * sidewaysSpeed;
+		}
+		else
+			velocity = transform.forward * 1f;
 
 		rigid.velocity = velocity;
 	}
@@ -215,5 +256,29 @@ public class SpiderController : MonoBehaviour
 
 		leg.isMoving = false;
 		movingLegsCount--;
+	}
+
+	void OnTriggerEnter(Collider other)
+	{
+		InterractionPoint point = other.GetComponent<InterractionPoint>();
+
+		if (point != null)
+			point.Notify(true);
+	}
+
+	void OnTriggerExit(Collider other)
+	{
+		InterractionPoint point = other.GetComponent<InterractionPoint>();
+
+		if (point != null)
+			point.Notify(false);
+	}
+
+	void OnTriggerStay(Collider other)
+	{
+		InterractionPoint point = other.GetComponent<InterractionPoint>();
+
+		if (Input.GetKeyDown(Config.Instance.connectKey) && point != null)
+			point.OpenDigital();
 	}
 }
