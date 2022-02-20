@@ -19,7 +19,7 @@ public class SceneTransition
 
         var cam = GameObject.FindObjectOfType<Camera>();
         if (uac == null) uac = cam.GetComponent<UniversalAdditionalCameraData>();
-        uac.renderPostProcessing = false;
+        if (uac != null) uac.renderPostProcessing = false;
 
         var screenCap = GetScreenCap(cam);
         if (screenCap == null) return;
@@ -53,7 +53,7 @@ public class SceneTransition
         GameObject.Destroy(quad.gameObject);
         GameObject.Destroy(backdrop.gameObject);
         quad = null;
-        uac.renderPostProcessing = false;
+        if (uac != null) uac.renderPostProcessing = true;
         isFading = false;
     }
     
