@@ -5,18 +5,18 @@ using UnityEngine;
 
 public class RailPlayer : MonoBehaviour
 {
-    private RailSegment currentSegment;
+    [SerializeField] private RailNode _currentNode;
     public float baseSpeed = 2.0f;
 
-    private RailMovementDirection cachedInput = RailMovementDirection.Straight;
+    [SerializeField] private RailMovementDirection cachedInput = RailMovementDirection.Forward;
 
-    private RailSegment CurrentSegment
+    private RailNode CurrentNode
     {
-        get => currentSegment;
+        get => _currentNode;
         set
         {
-            if (value == null) Debug.LogWarning($"Assigning null segment, previous segment: {currentSegment}");
-            currentSegment = value;
+            if (value == null) Debug.LogWarning($"Assigning null segment, previous segment: {_currentNode}");
+            _currentNode = value;
         }
     }
 
@@ -24,8 +24,8 @@ public class RailPlayer : MonoBehaviour
     {
         var entrance = FindObjectOfType<Entrance>();
         transform.position = entrance.transform.position;
-        CurrentSegment = entrance.startingSegment;
-        CurrentSegment.Init(this, true);
+        CurrentNode = entrance.startingNode;
+        CurrentNode.Init(this, RailMovementHeading.North, true);
     }
 
     private void Update()
@@ -40,12 +40,16 @@ public class RailPlayer : MonoBehaviour
         }
         if (Input.GetAxis("Vertical") > 0)
         {
-            cachedInput = RailMovementDirection.Straight;
+            cachedInput = RailMovementDirection.Forward;
         }
         
-        if (CurrentSegment == null) return;
-        CurrentSegment.Advance();
-        if (CurrentSegment.GetPositionPercent() > 0.9f) CurrentSegment = CurrentSegment.Handoff(cachedInput);
+        if (CurrentNode == null) return;
+        CurrentNode.Advance();
+        if (CurrentNode.GetPositionPercent(transform.position) > 0.9f)
+        {
+            CurrentNode = CurrentNode.Handoff(this, cachedInput);
+            cachedInput = RailMovementDirection.Forward;
+        }
 
     }
 }
