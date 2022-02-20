@@ -53,7 +53,7 @@ public partial class EnemyBase : MonoBehaviour
 			if (railPlayer.isDashing)
 				Die();
 			else
-				SceneLoader.Instance.ReloadScene();
+				if (SceneLoader.Instance != null) SceneLoader.Instance.ReloadScene();
 		}
 	}
 }
