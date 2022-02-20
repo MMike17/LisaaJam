@@ -27,7 +27,6 @@ public class SpiderController : MonoBehaviour
 	public Transform frontLegsHint, middleLegsHint, backLegsHint;
 
 	[Header("Scene references - Movement")]
-	public Transform groundRayStart;
 	public Animator anim;
 
 	[Header("Scene references - Movement")]
@@ -39,6 +38,7 @@ public class SpiderController : MonoBehaviour
 	SpiderLeg[] allLegs;
 	Transform[] lazers;
 	Rigidbody rigid;
+	InterractionPoint accessPoint;
 	int movingLegsCount;
 	bool lazerMode, isDancing;
 
@@ -66,9 +66,6 @@ public class SpiderController : MonoBehaviour
 
 		if (backLegsHint != null)
 			Gizmos.DrawSphere(backLegsHint.position, 0.1f);
-
-		if (groundRayStart != null)
-			Gizmos.DrawLine(groundRayStart.position, groundRayStart.position - transform.up * bodyHeight);
 	}
 
 	void Awake()
@@ -134,7 +131,10 @@ public class SpiderController : MonoBehaviour
 			return;
 		}
 
-		transform.rotation = Quaternion.LookRotation(transform.forward, Vector3.Lerp(Vector3.up, GetCrossNormal(), swayAmount));
+		if (accessPoint != null && Input.GetKeyDown(Config.Instance.connectKey))
+			accessPoint.OpenDigital();
+
+		// transform.rotation = Quaternion.LookRotation(transform.forward, Vector3.Lerp(Vector3.up, GetCrossNormal(), swayAmount));
 		transform.rotation *= Quaternion.AngleAxis(Input.GetAxis("Mouse X") * turnSpeed * Time.deltaTime, Vector3.up);
 
 		CameraManager.Instance.AddVerticalRotation(-Input.GetAxis("Mouse Y") * Time.deltaTime);
@@ -164,7 +164,7 @@ public class SpiderController : MonoBehaviour
 			lazerModel.localScale = Vector3.one + Vector3.forward * lazerSize;
 		}
 
-		lazerModel.gameObject.SetActive(lazerMode);
+		// lazerModel.gameObject.SetActive(lazerMode);
 
 		ComputeIK();
 	}
@@ -276,7 +276,7 @@ public class SpiderController : MonoBehaviour
 	{
 		InterractionPoint point = other.GetComponent<InterractionPoint>();
 
-		if (Input.GetKeyDown(Config.Instance.connectKey) && point != null)
-			point.OpenDigital();
+		if (point != null)
+			accessPoint = point;
 	}
 }
