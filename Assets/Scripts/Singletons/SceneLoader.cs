@@ -38,6 +38,21 @@ public class SceneLoader : Singleton<SceneLoader>
 			isLoading = false;
 	}
 
+	public void ReloadScene()
+	{
+		if (isLoading)
+			return;
+
+		isLoading = true;
+
+		GameScene selected = GetSceneByTag(currentSceneTag);
+
+		if (selected != null)
+			StartCoroutine(LoadSceneRoutine(selected));
+		else
+			isLoading = false;
+	}
+
 	IEnumerator LoadSceneRoutine(GameScene scene)
 	{
 		float timer = LevelManager.IsSceneLevel ? 0 : fadeDuration;
@@ -71,6 +86,7 @@ public class SceneLoader : Singleton<SceneLoader>
 		SceneManager.LoadScene(scene.buildIndex);
 		yield return new WaitForEndOfFrame();
 
+		currentSceneTag = scene.tag;
 		timer = 0;
 		
 		SceneTransition.SetUpFade();
