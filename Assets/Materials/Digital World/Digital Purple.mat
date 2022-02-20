@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: RoomTest
+  m_Name: Digital Purple
   m_Shader: {fileID: -6465566751694194690, guid: a92ebb9abc40f1448a31ada9636f71a2, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
@@ -120,7 +120,7 @@ Material:
     - _OutlineNormalStrength: 1
     - _OutlineNormalThreshold: 4
     - _OutlineNormalTightening: 1
-    - _OutlineThickness: 0.005
+    - _OutlineThickness: 0.0014
     - _Parallax: 0.005
     - _QueueOffset: 0
     - _ReceiveShadows: 1
@@ -135,6 +135,6 @@ Material:
     - _BaseColor: {r: 0.34834465, g: 0.7169812, b: 0.7053157, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _OutlineColor: {r: 1.0537785, g: 29.857058, b: 0.5854325, a: 1}
+    - _OutlineColor: {r: 29.857058, g: 0.6252781, b: 24.641508, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
   m_BuildTextureStacks: []
