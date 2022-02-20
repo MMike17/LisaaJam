@@ -26,7 +26,7 @@ public class RailPlayer : MonoBehaviour
         var entrance = FindObjectOfType<Entrance>();
         transform.position = entrance.transform.position;
         CurrentNode = entrance.startingNode;
-        CurrentNode.Init(this, RailMovementHeading.North, true);
+        CurrentNode.Init(this, RailMovementDirection.Forward, RailMovementHeading.North, true);
     }
 
     private void Update()
@@ -45,7 +45,7 @@ public class RailPlayer : MonoBehaviour
         }
         
         if (CurrentNode == null) return;
-        CurrentNode.Advance();
+        CurrentNode.Advance(this);
         if (CurrentNode.GetPositionPercent(transform.position) > 0.9f)
         {
             CurrentNode = CurrentNode.Handoff(this, cachedInput);
@@ -62,5 +62,11 @@ public class RailPlayer : MonoBehaviour
         var speed = baseRotSpeed * Time.deltaTime;
         if (targetDir == Vector3.zero) return;
         transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(targetDir), speed);
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.blue;
+        if (CurrentNode != null) Gizmos.DrawSphere(CurrentNode.transform.position, 0.5f);
     }
 }

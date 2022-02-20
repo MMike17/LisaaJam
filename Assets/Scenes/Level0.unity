@@ -12374,7 +12374,7 @@ PrefabInstance:
     - target: {fileID: 5700388449423173765, guid: a5075ea64a9808a4794a406a7c2d664b, type: 3}
       propertyPath: south
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1579999945}
     - target: {fileID: 6026908304850706071, guid: a5075ea64a9808a4794a406a7c2d664b, type: 3}
       propertyPath: m_Name
       value: Node (40)
@@ -13775,6 +13775,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2261380359881435604, guid: 2a45932fc0006514a89df9574a97a526, type: 3}
+      propertyPath: baseSpeed
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 2261380359881435604, guid: 2a45932fc0006514a89df9574a97a526, type: 3}
       propertyPath: baseRotSpeed
       value: 90

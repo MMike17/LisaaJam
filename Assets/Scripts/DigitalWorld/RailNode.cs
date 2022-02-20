@@ -33,28 +33,27 @@ public class RailNode : MonoBehaviour
     private RailNode left, right, forward;
 
     private RailMovementHeading prevHeading;
+    private RailNode prevNode;
     private RailNode exit;
-    private RailPlayer rider;
 
     private void Start()
     {
         var lr = GetComponent<LineRenderer>();
         lr.positionCount = 0;
-        if (north != null) DrawLine(lr, north);
-        if (east != null) DrawLine(lr, east);
-        if (west != null) DrawLine(lr, west);
-        if (south != null) DrawLine(lr, south);
+        if (north != null) DrawPath(lr, north);
+        if (east != null) DrawPath(lr, east);
+        if (west != null) DrawPath(lr, west);
+        if (south != null) DrawPath(lr, south);
     }
 
-    private void DrawLine(LineRenderer lr, RailNode node)
+    private void DrawPath(LineRenderer lr, RailNode node)
     {
         lr.SetPosition(lr.positionCount++, node.transform.position);
         lr.SetPosition(lr.positionCount++, transform.position);
     }
 
-    public void Advance()
+    public void Advance(RailPlayer rider)
     {
-        if (rider == null) return;
         if (exit == null) return;
 
         var currentPos = rider.transform.position;
@@ -64,32 +63,24 @@ public class RailNode : MonoBehaviour
         var targetPos = Vector3.Distance(currentPos, closestPoint) > 0.2f ? closestPoint : exitPos;
 
         rider.RotateTowards(targetPos);
-        
-        // rider.transform.LookAt(targetPos);
         rider.transform.position = Vector3.MoveTowards(currentPos, targetPos, rider.baseSpeed * Time.deltaTime);
     }
 
     public RailNode Handoff(RailPlayer rider, RailMovementDirection direction)
     {
         if (exit == null) return null;
+        var newSegment = exit;
         var heading = GetHeading(prevHeading, direction);
-        var newSegment = GetNode(heading, exit);
-
-        if (!newSegment) return null;
-
-        newSegment.Init(rider, heading, false);
-        if (newSegment == this) return this;
-
-        this.rider = null;
-
+        newSegment.Init(rider, direction, heading, false);
+        newSegment.prevNode = this;
+        
         return newSegment;
     }
 
-    public void Init(RailPlayer rider, RailMovementHeading heading, bool snapToEntrance)
+    public void Init(RailPlayer rider, RailMovementDirection direction, RailMovementHeading heading, bool snapToEntrance)
     {
         prevHeading = heading;
-        this.rider = rider;
-        exit = GetNode(heading, this);
+        exit = GetNode(heading, direction, this);
         SetupExitTargets(heading);
         if (snapToEntrance) rider.transform.position = transform.position;
         if (exit != null) rider.RotateTowards(exit.transform.position);
@@ -119,7 +110,7 @@ public class RailNode : MonoBehaviour
         return (RailMovementHeading) result;
     }
 
-    private RailNode GetNode(RailMovementHeading heading, RailNode parent, int recursiveDepth = 0)
+    private RailNode GetNode(RailMovementHeading heading, RailMovementDirection direction, RailNode parent, int recursiveDepth = 0)
     {
         var result = heading switch
         {
@@ -130,9 +121,14 @@ public class RailNode : MonoBehaviour
             _ => throw new ArgumentOutOfRangeException(nameof(heading), heading, null)
         };
 
-        if (result == null && recursiveDepth < 4)
-            result = GetNode(GetHeading(heading, RailMovementDirection.Right), parent, ++recursiveDepth);
-
+        if ((result == null || result == prevNode) && recursiveDepth < 4)
+        {
+            if (direction == RailMovementDirection.Forward) direction = RailMovementDirection.Right;
+            result = GetNode(GetHeading(heading, direction), direction, parent, ++recursiveDepth);
+        }
+        
+        if (!result) result = prevNode; // try returning back
+        
         return result;
     }
 
