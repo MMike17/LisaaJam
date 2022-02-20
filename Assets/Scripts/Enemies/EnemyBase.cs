@@ -20,15 +20,14 @@ public partial class EnemyBase : MonoBehaviour
 	protected bool isAlive;
 	protected Animator anim;
 
+	RailPlayer railPlayer => player.GetComponent<RailPlayer>();
+
 	protected virtual void Awake()
 	{
 		rigid = GetComponent<Rigidbody>();
 		colliders = GetComponentsInChildren<Collider>();
 		anim = GetComponent<Animator>();
 		agent = GetComponent<NavMeshAgent>();
-
-		// get player reference
-		// player = ;
 
 		isAlive = true;
 	}
@@ -39,21 +38,22 @@ public partial class EnemyBase : MonoBehaviour
 
 		// this.DelayAction(() =>
 		// {
-		// 	isAlive = false;
-		// foreach (Collider collider in colliders)
-		// 	collider.enabled = false;
+		isAlive = false;
+
+		foreach (Collider collider in colliders)
+			collider.enabled = false;
 		// }, /*animation duration*/);
 	}
 
-	void OnCollisionEnter(Collision other)
+	protected virtual void OnCollisionEnter(Collision other)
 	{
 		if (other.transform == player)
 		{
 			// detect player dash
-			// if ()
-			// 	Die();
-			// else
-			// 	SceneLoader.Instance.ReloadScene();
+			if (railPlayer.isDashing)
+				Die();
+			else
+				SceneLoader.Instance.ReloadScene();
 		}
 	}
 }

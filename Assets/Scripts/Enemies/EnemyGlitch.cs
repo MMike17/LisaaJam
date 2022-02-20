@@ -99,4 +99,9 @@ public class EnemyGlitch : EnemyBase
 			rotations = new Quaternion[maxPosMemory];
 		}
 	}
+	
+	protected override void OnCollisionEnter(Collision other)
+	{
+		base.OnCollisionEnter(other);
+	}
 }

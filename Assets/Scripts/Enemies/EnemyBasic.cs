@@ -32,4 +32,9 @@ public class EnemyBasic : EnemyBase
 			trajectoryUpdateTimer = 0;
 		}
 	}
+
+	protected override void OnCollisionEnter(Collision other)
+	{
+		base.OnCollisionEnter(other);
+	}
 }

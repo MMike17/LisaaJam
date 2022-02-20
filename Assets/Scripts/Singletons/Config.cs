@@ -5,7 +5,7 @@ public class Config : Singleton<Config>
 {
 	[Header("Settings")]
 	public KeyCode moveForwardKey;
-	public KeyCode moveBackwardsKey, moveLeftKey, moveRightKey, lazerModeKey, pauseKey;
+	public KeyCode moveBackwardsKey, moveLeftKey, moveRightKey, lazerModeKey, dashKey, pauseKey;
 
 	public bool canPause { get; private set; }
 

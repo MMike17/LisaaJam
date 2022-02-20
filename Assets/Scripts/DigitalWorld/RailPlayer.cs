@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class RailPlayer : MonoBehaviour
@@ -8,6 +5,7 @@ public class RailPlayer : MonoBehaviour
 	[SerializeField] private RailNode _currentNode;
 	public float baseSpeed = 2.0f;
 	public float baseRotSpeed = 5.0f;
+	public float dashDuration, dashSpeed, decelerationRate;
 
 	[SerializeField] private RailMovementDirection cachedInput = RailMovementDirection.Forward;
 
@@ -21,12 +19,19 @@ public class RailPlayer : MonoBehaviour
 		}
 	}
 
+	public bool isDashing => currentSpeed > baseSpeed;
+
+	float currentSpeed, targetSpeed, dashTimer;
+	public bool canDash;
+
 	private void Start()
 	{
 		var entrance = FindObjectOfType<Entrance>();
 		transform.position = entrance.transform.position;
 		CurrentNode = entrance.startingNode;
 		CurrentNode.Init(this, RailMovementDirection.Forward, RailMovementHeading.North, true);
+
+		currentSpeed = baseSpeed;
 	}
 
 	private void Update()
@@ -46,8 +51,22 @@ public class RailPlayer : MonoBehaviour
 			cachedInput = RailMovementDirection.Forward;
 		}
 
+		if (Input.GetKeyDown(Config.Instance.dashKey) && canDash)
+		{
+			currentSpeed = dashSpeed;
+			dashTimer = 0;
+		}
+
+		if (currentSpeed > baseSpeed)
+		{
+			dashTimer += Time.deltaTime;
+
+			if (dashTimer > dashDuration)
+				currentSpeed = Mathf.MoveTowards(currentSpeed, baseSpeed, decelerationRate * Time.deltaTime);
+		}
+
 		if (CurrentNode == null) return;
-		CurrentNode.Advance(this, baseSpeed);
+		CurrentNode.Advance(this, currentSpeed);
 		if (CurrentNode.GetPositionPercent(transform.position) > 0.9f)
 		{
 			CurrentNode = CurrentNode.Handoff(this, cachedInput);

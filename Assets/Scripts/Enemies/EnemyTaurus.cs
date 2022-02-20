@@ -106,8 +106,10 @@ public class EnemyTaurus : EnemyBase
 		}
 	}
 
-	void OnCollisionEnter(Collision other)
+	protected override void OnCollisionEnter(Collision other)
 	{
+		base.OnCollisionEnter(other);
+
 		if (currentState == AIState.Attacking && other.transform.CompareTag("Wall"))
 		{
 			rigid.velocity = Vector3.zero;

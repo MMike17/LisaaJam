@@ -54,4 +54,9 @@ public class EnemyShield : EnemyBasic
 				collider.enabled = false;
 		}
 	}
+	
+	protected override void OnCollisionEnter(Collision other)
+	{
+		base.OnCollisionEnter(other);
+	}
 }

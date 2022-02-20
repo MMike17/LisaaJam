@@ -93,4 +93,9 @@ public class EnemyGrower : EnemyBase
 		cooldownTimer = 0;
 		isGrowing = false;
 	}
+	
+	protected override void OnCollisionEnter(Collision other)
+	{
+		base.OnCollisionEnter(other);
+	}
 }

@@ -28,6 +28,7 @@ public enum RailMovementHeading
 [SelectionBase]
 public class RailNode : MonoBehaviour
 {
+	public bool canGiveDash;
     [SerializeField] private RailNode north, west, south, east;
 
     private RailNode left, right, forward;
@@ -70,9 +71,12 @@ public class RailNode : MonoBehaviour
     {
         if (exit == null) return null;
         var newSegment = exit;
+        newSegment.prevNode = this;
         var heading = GetHeading(prevHeading, direction);
         newSegment.Init(rider, direction, heading, false);
-        newSegment.prevNode = this;
+
+		if(newSegment.canGiveDash)
+			rider.canDash = true;
         
         return newSegment;
     }
