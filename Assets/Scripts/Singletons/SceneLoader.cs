@@ -49,38 +49,45 @@ public class SceneLoader : Singleton<SceneLoader>
 
 			LevelManager.Instance.SetShaderEdges(1 - percent);
 
-			yield return null;
+			yield return new WaitForEndOfFrame();
 		}
 
 		timer = 0;
-
+		
+		SceneTransition.SetUpFade();
 		while (timer < matrixAnimDuration)
 		{
 			timer += Time.deltaTime;
 			float percent = timer / matrixAnimDuration;
 
+			SceneTransition.SetFadePercent(percent);
+
 			// animate matrix shader
 
-			yield return null;
+			yield return new WaitForEndOfFrame();
 		}
+		SceneTransition.CleanUpFade();
 
 		SceneManager.LoadScene(scene.buildIndex);
+		yield return new WaitForEndOfFrame();
 
 		timer = 0;
-
+		
+		SceneTransition.SetUpFade();
 		while (timer < matrixAnimDuration)
 		{
 			timer += Time.deltaTime;
 			float percent = 1 - (timer / matrixAnimDuration);
 
-			// animate matrix shader
+			SceneTransition.SetFadePercent(percent);
 
 			if (LevelManager.IsSceneLevel)
 				LevelManager.Instance.SetShaderEdges(0);
 
-			yield return null;
+			yield return new WaitForEndOfFrame();
 		}
-
+		SceneTransition.CleanUpFade();
+		
 		timer = LevelManager.IsSceneLevel ? 0 : fadeDuration;
 
 		while (timer < fadeDuration)
@@ -89,7 +96,7 @@ public class SceneLoader : Singleton<SceneLoader>
 			float percent = timer / fadeDuration;
 
 			LevelManager.Instance.SetShaderEdges(percent);
-			yield return null;
+			yield return new WaitForEndOfFrame();
 		}
 
 		scene.OnSceneLoaded();

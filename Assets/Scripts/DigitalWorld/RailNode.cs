@@ -52,7 +52,7 @@ public class RailNode : MonoBehaviour
         lr.SetPosition(lr.positionCount++, transform.position);
     }
 
-    public void Advance(RailPlayer rider)
+    public void Advance(RailPlayer rider, float speed)
     {
         if (exit == null) return;
 
@@ -63,7 +63,7 @@ public class RailNode : MonoBehaviour
         var targetPos = Vector3.Distance(currentPos, closestPoint) > 0.2f ? closestPoint : exitPos;
 
         rider.RotateTowards(targetPos);
-        rider.transform.position = Vector3.MoveTowards(currentPos, targetPos, rider.baseSpeed * Time.deltaTime);
+        rider.transform.position = Vector3.MoveTowards(currentPos, targetPos, speed * Time.deltaTime);
     }
 
     public RailNode Handoff(RailPlayer rider, RailMovementDirection direction)
@@ -82,8 +82,12 @@ public class RailNode : MonoBehaviour
         prevHeading = heading;
         exit = GetNode(heading, direction, this);
         SetupExitTargets(heading);
-        if (snapToEntrance) rider.transform.position = transform.position;
-        if (exit != null) rider.RotateTowards(exit.transform.position);
+        if (snapToEntrance)
+        {
+            rider.transform.position = transform.position;
+            rider.transform.LookAt(exit.transform.position);
+        }
+        else if (exit != null) rider.RotateTowards(exit.transform.position);
     }
 
     private static RailMovementHeading GetHeading(RailMovementHeading heading, RailMovementDirection direction)

@@ -2,71 +2,73 @@ using System;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class SceneTransition : MonoBehaviour
+public class SceneTransition
 {
-    [SerializeField] private Material transitionMaterial;
+    private static Material transitionMaterial, backdropMaterial;
+    private static UniversalAdditionalCameraData uac;
 
-    private MeshRenderer quad;
+    private static MeshRenderer quad, backdrop;
 
-    private bool isFading;
+    private static bool isFading;
     private static readonly int MainTex = Shader.PropertyToID("_MainTex");
     private static readonly int DissolveAmount = Shader.PropertyToID("_DissolveAmount");
 
-    public void SetUpFade()
+    public static void SetUpFade()
     {
-        if (isFading) return;
-        var cam = Camera.main;
-        if (cam == null) return;
+        if (isFading) CleanUpFade();
+
+        var cam = GameObject.FindObjectOfType<Camera>();
+        if (uac == null) uac = cam.GetComponent<UniversalAdditionalCameraData>();
+        uac.renderPostProcessing = false;
+
         var screenCap = GetScreenCap(cam);
         if (screenCap == null) return;
         isFading = true;
-        var uac = cam.GetComponent<UniversalAdditionalCameraData>();
-        uac.renderPostProcessing = false;
-
+        
+        if (transitionMaterial == null) transitionMaterial = Resources.Load<Material>("SceneDissolveMaterial");
+        if (backdropMaterial == null) backdropMaterial = Resources.Load<Material>("SceneBackdropMaterial");
+        
         quad = GameObject.CreatePrimitive(PrimitiveType.Quad).GetComponent<MeshRenderer>();
-        SetQuadTransform(cam, quad.transform);
-
+        quad.name = "Scene Transition - Dissolve Quad";
+        SetQuadTransform(cam, quad.transform, 0.01f);
         quad.material = transitionMaterial;
         quad.material.SetTexture(MainTex, screenCap);
+        
+        backdrop = GameObject.CreatePrimitive(PrimitiveType.Quad).GetComponent<MeshRenderer>();
+        backdrop.name = "Scene Transition - Backdrop Quad";
+        SetQuadTransform(cam, backdrop.transform, 0.02f);
+        backdrop.material = backdropMaterial;
     }
 
     /// <param name="percent">Must be 0 - 1 range</param>
-    public void SetFadePercent(float percent)
+    public static void SetFadePercent(float percent)
     {
         if (!isFading) SetUpFade();
         quad.material.SetFloat(DissolveAmount, percent);
     }
 
-    public void CleanUpFade()
+    public static void CleanUpFade()
     {
         if (!isFading) return;
-        Destroy(quad.gameObject);
+        GameObject.Destroy(quad.gameObject);
+        GameObject.Destroy(backdrop.gameObject);
         quad = null;
-        
-        var uac = Camera.main.GetComponent<UniversalAdditionalCameraData>();
         uac.renderPostProcessing = false;
-        
         isFading = false;
     }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.F)) SetUpFade();
-    }
-
-    private static void SetQuadTransform(Camera cam, Transform quad)
+    
+    private static void SetQuadTransform(Camera cam, Transform quad, float offset)
     {
         var aspectRatio = Screen.width / (float) Screen.height; // in respect to width
-
-        var posOffset = cam.nearClipPlane + 0.01f;
-        quad.transform.position = cam.transform.position + Vector3.forward * posOffset;
+        quad.SetParent(cam.transform);
+        var posOffset = cam.nearClipPlane + offset;
+        quad.transform.position = cam.transform.position + cam.transform.forward * posOffset;
         var direction = quad.transform.position - cam.transform.position;
         quad.transform.rotation = Quaternion.LookRotation(direction);
 
         var height = Mathf.Tan(cam.fieldOfView * Mathf.Deg2Rad * 0.5f) * posOffset * 2f;
         var width = height * aspectRatio;
         
-        quad.SetParent(cam.transform);
 
         quad.localScale = new Vector3(width, height, 1f);
     }
@@ -90,7 +92,7 @@ public class SceneTransition : MonoBehaviour
         cam.targetTexture = null;
         RenderTexture.active = null;
 
-        Destroy(renderTexture);
+        GameObject.Destroy(renderTexture);
 
         return result;
     }

@@ -8,7 +8,7 @@ public class RailPlayer : MonoBehaviour
     [SerializeField] private RailNode _currentNode;
     public float baseSpeed = 2.0f;
     public float baseRotSpeed = 5.0f;
-    
+
     [SerializeField] private RailMovementDirection cachedInput = RailMovementDirection.Forward;
 
     private RailNode CurrentNode
@@ -31,6 +31,8 @@ public class RailPlayer : MonoBehaviour
 
     private void Update()
     {
+        if (SceneLoader.Instance.isLoading) return;
+
         if (Input.GetAxis("Horizontal") < 0)
         {
             cachedInput = RailMovementDirection.Left;
@@ -45,7 +47,7 @@ public class RailPlayer : MonoBehaviour
         }
         
         if (CurrentNode == null) return;
-        CurrentNode.Advance(this);
+        CurrentNode.Advance(this, baseSpeed);
         if (CurrentNode.GetPositionPercent(transform.position) > 0.9f)
         {
             CurrentNode = CurrentNode.Handoff(this, cachedInput);
