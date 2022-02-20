@@ -42,6 +42,8 @@ public partial class EnemyBase : MonoBehaviour
 
 		foreach (Collider collider in colliders)
 			collider.enabled = false;
+
+		gameObject.SetActive(false);
 		// }, /*animation duration*/);
 	}
 
