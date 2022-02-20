@@ -36,7 +36,7 @@ public class MainMenu : MonoBehaviour
 
 	public void Play()
 	{
-		SceneLoader.Instance.LoadScene(SceneTag.Software_0);
+		SceneLoader.Instance.LoadScene(SceneTag.Hardware);
 		SetUIInterractibility(false);
 	}
 

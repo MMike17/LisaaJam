@@ -5,12 +5,10 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class SpiderController : MonoBehaviour
 {
-	// TODO : lazer
-
 	[Header("Settings - Legs")]
 	public float legsIKMaxDistance;
 	public float legsMoveDuration, legMoveHeight;
-	[Range(0, 1)]
+	[Range(0, 0.1f)]
 	public float swayAmount;
 	public int IKIterations, maxSyncLegMove;
 	public AnimationCurve legMoveHeightCurve;

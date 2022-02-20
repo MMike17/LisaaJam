@@ -630,6 +630,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1166284658}
     m_Modifications:
+    - target: {fileID: 695402305608889155, guid: a5075ea64a9808a4794a406a7c2d664b, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: d3519dee567f1a346b474b3ff7d123e2, type: 2}
     - target: {fileID: 5542337137254189802, guid: a5075ea64a9808a4794a406a7c2d664b, type: 3}
       propertyPath: m_RootOrder
       value: 36
@@ -689,6 +693,10 @@ PrefabInstance:
     - target: {fileID: 5700388449423173765, guid: a5075ea64a9808a4794a406a7c2d664b, type: 3}
       propertyPath: south
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5700388449423173765, guid: a5075ea64a9808a4794a406a7c2d664b, type: 3}
+      propertyPath: canGiveDash
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6026908304850706071, guid: a5075ea64a9808a4794a406a7c2d664b, type: 3}
       propertyPath: m_Name
@@ -1889,6 +1897,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1166284658}
     m_Modifications:
+    - target: {fileID: 695402305608889155, guid: a5075ea64a9808a4794a406a7c2d664b, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: d3519dee567f1a346b474b3ff7d123e2, type: 2}
     - target: {fileID: 5542337137254189802, guid: a5075ea64a9808a4794a406a7c2d664b, type: 3}
       propertyPath: m_RootOrder
       value: 18
@@ -1945,6 +1957,10 @@ PrefabInstance:
       propertyPath: south
       value: 
       objectReference: {fileID: 192872981}
+    - target: {fileID: 5700388449423173765, guid: a5075ea64a9808a4794a406a7c2d664b, type: 3}
+      propertyPath: canGiveDash
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6026908304850706071, guid: a5075ea64a9808a4794a406a7c2d664b, type: 3}
       propertyPath: m_Name
       value: Node (18)
@@ -5060,6 +5076,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1166284658}
     m_Modifications:
+    - target: {fileID: 695402305608889155, guid: a5075ea64a9808a4794a406a7c2d664b, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: d3519dee567f1a346b474b3ff7d123e2, type: 2}
     - target: {fileID: 5542337137254189802, guid: a5075ea64a9808a4794a406a7c2d664b, type: 3}
       propertyPath: m_RootOrder
       value: 27
@@ -13123,42 +13143,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4016636340903633543, guid: b1fa5d07146ccd347aedd3c80253d55f, type: 3}
-      propertyPath: m_CollisionDetection
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4016636340903633656, guid: b1fa5d07146ccd347aedd3c80253d55f, type: 3}
       propertyPath: m_Name
       value: Enemy_Glitch
-      objectReference: {fileID: 0}
-    - target: {fileID: 4016636340903633656, guid: b1fa5d07146ccd347aedd3c80253d55f, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4016636340903633657, guid: b1fa5d07146ccd347aedd3c80253d55f, type: 3}
       propertyPath: player
       value: 
       objectReference: {fileID: 1875086409}
-    - target: {fileID: 4016636340903633657, guid: b1fa5d07146ccd347aedd3c80253d55f, type: 3}
-      propertyPath: attackDelay
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 4016636340903633657, guid: b1fa5d07146ccd347aedd3c80253d55f, type: 3}
-      propertyPath: maxPosMemory
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 4016636340903633657, guid: b1fa5d07146ccd347aedd3c80253d55f, type: 3}
-      propertyPath: attackDuration
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 4016636340903633657, guid: b1fa5d07146ccd347aedd3c80253d55f, type: 3}
-      propertyPath: noiseMagnitude
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4016636340903633657, guid: b1fa5d07146ccd347aedd3c80253d55f, type: 3}
-      propertyPath: maxGlitchDistance
-      value: 5
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b1fa5d07146ccd347aedd3c80253d55f, type: 3}
 --- !u!1 &1918315909
@@ -14264,6 +14256,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1166284658}
     m_Modifications:
+    - target: {fileID: 695402305608889155, guid: a5075ea64a9808a4794a406a7c2d664b, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: d3519dee567f1a346b474b3ff7d123e2, type: 2}
     - target: {fileID: 2546989023618658923, guid: a5075ea64a9808a4794a406a7c2d664b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -14331,6 +14327,10 @@ PrefabInstance:
     - target: {fileID: 5700388449423173765, guid: a5075ea64a9808a4794a406a7c2d664b, type: 3}
       propertyPath: south
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5700388449423173765, guid: a5075ea64a9808a4794a406a7c2d664b, type: 3}
+      propertyPath: canGiveDash
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6026908304850706071, guid: a5075ea64a9808a4794a406a7c2d664b, type: 3}
       propertyPath: m_Name

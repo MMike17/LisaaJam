@@ -17,6 +17,7 @@ public class InterractionPoint : MonoBehaviour
 	void Awake()
 	{
 		indicator.SetParent(canvas.transform);
+		indicatorIn.color = outColor;
 	}
 
 	void Update()

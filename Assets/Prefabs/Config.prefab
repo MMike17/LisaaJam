@@ -51,3 +51,4 @@ MonoBehaviour:
   dashKey: 32
   pauseKey: 27
   connectKey: 13
+  danceKey: 8
