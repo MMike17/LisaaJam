@@ -36,6 +36,22 @@ public class RailNode : MonoBehaviour
     private RailNode exit;
     private RailPlayer rider;
 
+    private void Start()
+    {
+        var lr = GetComponent<LineRenderer>();
+        lr.positionCount = 0;
+        if (north != null) DrawLine(lr, north);
+        if (east != null) DrawLine(lr, east);
+        if (west != null) DrawLine(lr, west);
+        if (south != null) DrawLine(lr, south);
+    }
+
+    private void DrawLine(LineRenderer lr, RailNode node)
+    {
+        lr.SetPosition(lr.positionCount++, node.transform.position);
+        lr.SetPosition(lr.positionCount++, transform.position);
+    }
+
     public void Advance()
     {
         if (rider == null) return;
@@ -47,7 +63,9 @@ public class RailNode : MonoBehaviour
 
         var targetPos = Vector3.Distance(currentPos, closestPoint) > 0.2f ? closestPoint : exitPos;
 
-        rider.transform.LookAt(targetPos);
+        rider.RotateTowards(targetPos);
+        
+        // rider.transform.LookAt(targetPos);
         rider.transform.position = Vector3.MoveTowards(currentPos, targetPos, rider.baseSpeed * Time.deltaTime);
     }
 
@@ -58,11 +76,10 @@ public class RailNode : MonoBehaviour
         var newSegment = GetNode(heading, exit);
 
         if (!newSegment) return null;
-        if (newSegment == this) return this;
-        Debug.Log(newSegment.name);
-
 
         newSegment.Init(rider, heading, false);
+        if (newSegment == this) return this;
+
         this.rider = null;
 
         return newSegment;
@@ -75,7 +92,7 @@ public class RailNode : MonoBehaviour
         exit = GetNode(heading, this);
         SetupExitTargets(heading);
         if (snapToEntrance) rider.transform.position = transform.position;
-        if (exit != null) rider.transform.LookAt(exit.transform.position);
+        if (exit != null) rider.RotateTowards(exit.transform.position);
     }
 
     private static RailMovementHeading GetHeading(RailMovementHeading heading, RailMovementDirection direction)

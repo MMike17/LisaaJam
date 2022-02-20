@@ -7,7 +7,8 @@ public class RailPlayer : MonoBehaviour
 {
     [SerializeField] private RailNode _currentNode;
     public float baseSpeed = 2.0f;
-
+    public float baseRotSpeed = 5.0f;
+    
     [SerializeField] private RailMovementDirection cachedInput = RailMovementDirection.Forward;
 
     private RailNode CurrentNode
@@ -51,5 +52,15 @@ public class RailPlayer : MonoBehaviour
             cachedInput = RailMovementDirection.Forward;
         }
 
+    }
+
+    public void RotateTowards(Vector3 target)
+    {
+        var pos = transform.position;
+        Vector3 targetDir = target - pos;
+        targetDir.y = 0.0f;
+        var speed = baseRotSpeed * Time.deltaTime;
+        if (targetDir == Vector3.zero) return;
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(targetDir), speed);
     }
 }
