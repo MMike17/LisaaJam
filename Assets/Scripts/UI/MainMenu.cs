@@ -21,6 +21,8 @@ public class MainMenu : MonoBehaviour
 			Config.Instance.SetCanPause(false);
 		});
 
+		SceneLoader.Instance.SubscribeEvent(SceneLoader.GameScene.SceneTag.Hardware, () => Config.Instance.SetCanPause(true));
+
 		// detect first launch
 		if (!SceneLoader.Instance.isLoading)
 		{

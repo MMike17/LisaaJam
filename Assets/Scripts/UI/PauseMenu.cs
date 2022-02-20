@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class PauseMenu : MonoBehaviour
@@ -8,15 +9,19 @@ public class PauseMenu : MonoBehaviour
 	[Header("Scene references")]
 	public GameObject panel;
 	public SkinData[] datas;
+	public SkinData tempData;
 
-	bool isPaused, scheduled;
+	bool isPaused;
+	SkinData nextData;
 
 	void Awake()
 	{
 		panel.SetActive(false);
 		DontDestroyOnLoad(gameObject);
 
-		Skinning.Init(datas[0]);
+		nextData = datas[Random.Range(0, datas.Length - 1)];
+		tempData.FixSlots();
+		StartCoroutine(RazerRGB());
 
 		isPaused = false;
 	}
@@ -25,17 +30,30 @@ public class PauseMenu : MonoBehaviour
 	{
 		if (Input.GetKeyDown(Config.Instance.pauseKey) && Config.Instance.canPause)
 			ChangePause();
+	}
 
-		if (!scheduled)
+	IEnumerator RazerRGB()
+	{
+		float timer = 0;
+		SkinData current = nextData;
+		nextData = datas[Random.Range(0, datas.Length - 1)];
+
+		while (timer < randomDelay)
 		{
-			scheduled = true;
+			float percent = timer / randomDelay;
 
-			this.DelayAction(() =>
-			{
-				Skinning.ResetSkin(datas[Random.Range(0, datas.Length - 1)]);
-				scheduled = false;
-			}, randomDelay);
+			int index = tempData.skin_slots.IndexOf(tempData.skin_slots.Find(item => item.tag == SkinTag.PRIMARY_WINDOW));
+			tempData.skin_slots[index].color = Color.Lerp(current.skin_slots[index].color, nextData.skin_slots[index].color, percent);
+
+			index = tempData.skin_slots.IndexOf(tempData.skin_slots.Find(item => item.tag == SkinTag.PRIMARY_ELEMENT));
+			tempData.skin_slots[index].color = Color.Lerp(current.skin_slots[index].color, nextData.skin_slots[index].color, percent);
+
+			Skinning.ResetSkin(tempData);
+
+			yield return null;
 		}
+
+		StartCoroutine(RazerRGB());
 	}
 
 	public void MainMenu()
